@@ -1,14 +1,15 @@
-# garden-component
+# Garden reloader component
 
-A Clojure library designed to ... well, that part is up to you.
+A "[Sierra Component](https://github.com/stuartsierra/component)" that watches
+your [Garden](https://github.com/noprompt/garden) stylesheets for changes, and
+compiles them to CSS.
 
 ## Usage
 
-FIXME
+
 
 ## License
 
-Copyright © 2016 FIXME
+Copyright © 2016 Arne Brasseur
 
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Distributed under the Mozilla Public License 2.0 (https://www.mozilla.org/en-US/MPL/2.0/)
