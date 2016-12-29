@@ -35,13 +35,13 @@ metadata key in the given namespaces to a CSS file.
   (:require [com.stuartsierra.component :as component]
             [figwheel-sidecar.config :as fw-conf]
             [figwheel-sidecar.system :as fw-sys]
-            [garden-reloader.core :refer [new-garden-watcher]]))
+            [garden-reloader.core :refer [new-garden-watcher]])) ;; <------
 
 (defn dev-system []
   (component/system-map
    :figwheel-system (fw-sys/figwheel-system (fw-conf/fetch-config))
    :css-watcher (fw-sys/css-watcher {:watch-paths ["resources/public/css"]})
-   :garden-watcher (new-garden-watcher '[sesame.styles])))
+   :garden-watcher (new-garden-watcher '[sesame.styles]))) ;; <------
 ```
 
 The above will generate `resources/public/css/main.css`, and recreate it
