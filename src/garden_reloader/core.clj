@@ -51,7 +51,7 @@ name as resources/public/css/<name>.css"
       (when-let [garden-meta (-> var meta :garden)]
         (let [garden-meta (if (map? garden-meta) garden-meta {})]
           (let [target (:output-to garden-meta (str "resources/public/css/" sym ".css"))]
-            (println "Garden: compiling #'" ns "/" sym)
+            (println (str "Garden: compiling #'" ns "/" sym))
             (io/make-parents target)
             (css (assoc garden-meta :output-to target) @var)))))))
 
