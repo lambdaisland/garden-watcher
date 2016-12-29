@@ -52,15 +52,16 @@ get instant reloading in the browser.
 
 Garden provides a macro, `garden.def/defstylesheet`, that allows you to pass
 compiler options to `garde.core/css`. By adding `:output-to` this allows writing
-stylesheets that "automatically" create the corresponding CSS files.
+stylesheets that "automatically" create the corresponding CSS files. When using
+garden-reloader you should *not* use `defstylesheet`.
 
-This compile-to-CSS happens as a side effect of loading the namespace, which
-makes it impossible to load the namespace without generating the CSS file, or
-generating the CSS without reloading the namespace. Therefore `garden-reloader`
-chose a different approach.
+With `defstylesheet` the compile-to-CSS happens as a side effect of loading the
+namespace, which makes it impossible to load the namespace without generating
+the CSS file, or generating the CSS without reloading the namespace. Therefore
+`garden-reloader` chose a different approach.
 
-Tag your style vars with a `:garden` metadata key. You can use a map to add
-compiler options, including `:output-to`
+Instead create regular vars, adn tag them with a `:garden` metadata key. You can
+use a map to add compiler options, including `:output-to`.
 
 ``` clojure
 (def
@@ -71,8 +72,6 @@ compiler options, including `:output-to`
    [:h1 {:color "blue"}]))
 ```
 
-## Default output file
-
 If you don't specify an output file, it defaults to `resources/public/css/{{var-name}}.css`
 
 ``` clojure
@@ -82,11 +81,8 @@ If you don't specify an output file, it defaults to `resources/public/css/{{var-
    [:h1 {:color "blue"}]))
 ```
 
-## defstyles
-
-You can use the `garden.def/defstyles` macro to get rid of the `(list ,,,)`
-(that's all that macro does).
-
+Note that Garden provides `garden.def/defstyles` macro that allows you to get
+rid of the `(list ,,,)` (that's all that macro does), so this code is equivalent:
 
 ``` clojure
 (require '[garden.def :refer [defstyles]])
@@ -96,7 +92,7 @@ You can use the `garden.def/defstyles` macro to get rid of the `(list ,,,)`
 ```
 
 Or you can use `garden-reloader.def/defstyles`, which does the exact same thing,
-but automatically adds the `:garden` metadata.
+but automatically adds the `:garden` metadata, so this code is equivalent again:
 
 ``` clojure
 (require '[garden-reloader.def :refer [defstyles]]) ;; <-- different namespace
@@ -105,11 +101,10 @@ but automatically adds the `:garden` metadata.
   [:h1 {:color "blue"}])
 ```
 
-You should *not* use `defstylesheet`.
-
 ## One-off Compiling to CSS
 
-To generate CSS files from these vars, use `garden-reloader.core/compile-garden-namespaces`:
+To generate CSS files from these vars, use
+`garden-reloader.core/compile-garden-namespaces`:
 
 ``` clojure
 (compile-garden-namespaces '[sesame.styles])
