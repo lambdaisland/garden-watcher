@@ -127,8 +127,9 @@ E.g. say you're building an uberjar containing compiled ClojureScript and CSS.
   :profiles {,,,
 
              :uberjar
-             {:prep-tasks ["compile" ["cljsbuild" "once" "min"]
-                           "garden" ["run" "-m" "garden-reloader.main" "sesame.styles"]]
+             {:prep-tasks ["compile"
+                           ["cljsbuild" "once" "min"]
+                           ["run" "-m" "garden-reloader.main" "sesame.styles"]]
               :omit-source true
               :aot :all}})
 ```

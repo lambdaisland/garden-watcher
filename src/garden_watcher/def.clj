@@ -1,4 +1,4 @@
-(ns garden-reloader.def
+(ns garden-watcher.def
   (:require [garden.core]))
 
 (defmacro defstyles

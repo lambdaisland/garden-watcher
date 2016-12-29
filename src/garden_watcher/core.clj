@@ -1,4 +1,4 @@
-(ns garden-reloader.core
+(ns garden-watcher.core
   (:require [clojure.java.io :as io]
             [clojure.java.classpath :as cp]
             [clojure.string :as str]
