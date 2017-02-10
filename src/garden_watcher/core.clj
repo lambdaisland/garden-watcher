@@ -71,16 +71,26 @@ syms with a :garden metadata key, and compiles them to CSS."
 (defrecord GardenWatcherComponent [namespaces]
   component/Lifecycle
   (start [this]
-    (let [paths (map (comp file-on-classpath ns-file-name) namespaces)
-          handler (garden-reloader-handler namespaces)]
-      (compile-garden-namespaces namespaces)
-      (println "Garden: watching" (str/join ", " paths))
-      (assoc this :garden-watcher-hawk (hawk/watch! [{:paths paths
-                                          :handler handler}]))))
+    (if (:garden-watcher-hawk this)
+      (do
+        (println "Garden: watcher already running.")
+        this)
+      (let [paths (map (comp file-on-classpath ns-file-name) namespaces)
+            handler (garden-reloader-handler namespaces)]
+        (compile-garden-namespaces namespaces)
+        (println "Garden: watching" (str/join ", " paths))
+        (assoc this :garden-watcher-hawk (hawk/watch! [{:paths paths
+                                                        :handler handler}])))))
   (stop [this]
     (println "Garden: stopped watching namespaces.")
-    (hawk/stop! (:garden-watcher-hawk this))
-    (dissoc this :garden-watcher-hawk)))
+    (if-let [hawk (:garden-watcher-hawk this)]
+      (do
+        (hawk/stop! hawk)
+        (println "Garden: stopped watching namespaces.")
+        (dissoc this :garden-watcher-hawk))
+      (do
+        (println "Garden: watcher not running")
+        this))))
 
 (defn new-garden-watcher
   "Create a new Sierra Component that watches the given namespaces for changes,
