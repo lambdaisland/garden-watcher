@@ -1,4 +1,4 @@
-(defproject lambdaisland/garden-watcher "0.3.1"
+(defproject lambdaisland/garden-watcher "0.3.2"
   :description "A component for reloading Garden stylesheets"
   :url "https://github.com/plexus/garden-watcher"
   :license {:name "Mozilla Public License 2.0"
