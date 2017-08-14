@@ -82,7 +82,6 @@ syms with a :garden metadata key, and compiles them to CSS."
         (assoc this :garden-watcher-hawk (hawk/watch! [{:paths paths
                                                         :handler handler}])))))
   (stop [this]
-    (println "Garden: stopped watching namespaces.")
     (if-let [hawk (:garden-watcher-hawk this)]
       (do
         (hawk/stop! hawk)
