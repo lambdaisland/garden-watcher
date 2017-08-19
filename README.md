@@ -41,7 +41,7 @@ metadata key in the given namespaces to a CSS file.
   (component/system-map
    :figwheel-system (fw-sys/figwheel-system (fw-conf/fetch-config))
    :css-watcher (fw-sys/css-watcher {:watch-paths ["resources/public/css"]})
-   :garden-watcher (new-garden-watcher '[sesame.styles]))) ;; <------
+   :garden-watcher (new-garden-watcher {:watch ['sesame.styles]}))) ;; <------
 ```
 
 The above will generate `resources/public/css/main.css`, and recreate it
@@ -114,7 +114,7 @@ garden-watcher also includes a "main" entry point to make it easy to invoke
 this as a build step.
 
 ```
-lein run -m garden-watcher.main sesame.styles
+lein run -m garden-watcher.main --namespace sesame.styles
 ```
 
 E.g. say you're building an uberjar containing compiled ClojureScript and CSS.
@@ -129,7 +129,7 @@ E.g. say you're building an uberjar containing compiled ClojureScript and CSS.
              :uberjar
              {:prep-tasks ["compile"
                            ["cljsbuild" "once" "min"]
-                           ["run" "-m" "garden-watcher.main" "sesame.styles"]]
+                           ["run" "-m" "garden-watcher.main" "--namespace" "sesame.styles"]]
               :omit-source true
               :aot :all}})
 ```
