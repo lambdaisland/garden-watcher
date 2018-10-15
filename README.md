@@ -10,7 +10,7 @@ Add `lambdaisland/garden-watcher` as a dependency in `project.clj` (Leiningen)
 or `build.boot` (Boot).
 
 ```
-[lambdaisland/garden-watcher "0.3.0"]
+[lambdaisland/garden-watcher "0.3.3"]
 ```
 
 Create vars containing Garden-style declarations, and add a `^:garden` metadata
