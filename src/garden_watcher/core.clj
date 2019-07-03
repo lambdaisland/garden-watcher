@@ -61,9 +61,20 @@ name as resources/public/css/<name>.css"
       (when-let [ns-path (select-ns-path namespaces (str (:file event)))]
         (reload-and-compile! namespaces ns-path)))))
 
+(defn start-garden-watcher! [namespaces]
+  (let [paths   (map (comp file-on-classpath ns-file-name) namespaces)
+        handler (garden-reloader-handler namespaces)]
+    (compile-garden-namespaces namespaces)
+    (println "Garden: watching" (str/join ", " paths))
+    (hawk/watch! [{:paths paths :handler handler}])))
+
+(defn stop-garden-watcher! [hawk]
+  (hawk/stop! hawk)
+  (println "Garden: stopped watching namespaces."))
+
 (defn compile-garden-namespaces
   "Given a list of namespaces (seq of symbol), reloads the namespaces, finds all
-syms with a :garden metadata key, and compiles them to CSS."
+  syms with a :garden metadata key, and compiles them to CSS."
   [namespaces]
   (run! #(reload-and-compile! namespaces %)
         (map ns-file-name namespaces)))
@@ -75,17 +86,11 @@ syms with a :garden metadata key, and compiles them to CSS."
       (do
         (println "Garden: watcher already running.")
         this)
-      (let [paths (map (comp file-on-classpath ns-file-name) namespaces)
-            handler (garden-reloader-handler namespaces)]
-        (compile-garden-namespaces namespaces)
-        (println "Garden: watching" (str/join ", " paths))
-        (assoc this :garden-watcher-hawk (hawk/watch! [{:paths paths
-                                                        :handler handler}])))))
+      (assoc this :garden-watcher-hawk (start-garden-watcher! namespaces))))
   (stop [this]
     (if-let [hawk (:garden-watcher-hawk this)]
       (do
-        (hawk/stop! hawk)
-        (println "Garden: stopped watching namespaces.")
+        (stop-garden-watcher! hawk)
         (dissoc this :garden-watcher-hawk))
       (do
         (println "Garden: watcher not running")

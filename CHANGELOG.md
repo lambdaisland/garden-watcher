@@ -3,9 +3,19 @@ All notable changes to this project will be documented in this file. This change
 
 <!-- ## [Unreleased] -->
 <!-- ### Added -->
-<!-- ### Removed -->
 <!-- ### Changed -->
 <!-- ### Fixed -->
+
+## Unreleased
+
+### Changed
+
+- Upgrade dependencies
+
+### Added
+
+- `start-garden-watcher!` / `stop-garden-watcher!`, for people using e.g.
+  Integrant instead of Component
 
 ## [0.3.2] - 2017-08-14
 ### Changed

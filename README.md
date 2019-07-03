@@ -1,15 +1,18 @@
 # Garden reloader component
 
-A "[Sierra Component](https://github.com/stuartsierra/component)" that watches
-your [Garden](https://github.com/noprompt/garden) stylesheets for changes, and
-compiles them to CSS.
+Watch your [Garden](https://github.com/noprompt/garden) stylesheets for changes,
+and compiles them to CSS.
 
 ## Quickstart
 
-Add `lambdaisland/garden-watcher` as a dependency in `project.clj` (Leiningen)
-or `build.boot` (Boot).
+Add `lambdaisland/garden-watcher` as a dependency in `deps.edn` (Clojure CLI),
+`project.clj` (Leiningen) or `build.boot` (Boot).
 
 ```
+;; deps.edn
+{lambdaisland/garden-watcher {:mvn/version "0.3.3"}}
+
+;; project.clj/build.boot
 [lambdaisland/garden-watcher "0.3.3"]
 ```
 
@@ -26,9 +29,45 @@ to the var.
    [:h3 {:color "red"}]))
 ```
 
-Now use `garden-watcher.core/new-garden-watcher`, passing it a vector of namespace
-names, to get a component that will watch and compile each var with a `:garden`
-metadata key in the given namespaces to a CSS file.
+Now you start garden-watcher, passing it your namespace name, and it will
+recompile the stylesheet and create a `main.css` file whenever the namespace
+changes. You can start garden-watcher in several ways. For more metadata options
+(e.g. to control the output file) and a convenience macro (`defstyles`), see
+below.
+
+### Use with `garden-watcher.main`
+
+There's a main namespace that's convenient if you want to simply run the watcher
+as its own process. You pass one or more namespace names as arguments.
+
+```
+;; leiningen
+lein run -m garden-watcher.main name.of.your.namespace
+
+;; clojure CLI
+clj -m garden-watcher.main name.of.your.namespace
+```
+
+### Use as a library
+
+There are start/stop functions so you can hook this up however you like. Useful
+for use with Integrant, Mount, etc.
+
+``` clojure
+(require '[garden-watcher.core :as gw])
+
+(def watcher (gw/start-garden-watcher! '[name.of.namespace name.of.other.namespace]))
+(gw/stop-garden-watcher! watcher)
+```
+
+### Use as a Component
+
+If you're using `com.stuartsierra.component` then you can use the built-in
+component directly.
+
+Use `garden-watcher.core/new-garden-watcher` to create the component, passing it
+a vector of namespace names. Once started this will watch and compile each var
+with a `:garden` metadata key in the given namespaces to a CSS file.
 
 ``` clojure
 (ns user
@@ -134,15 +173,8 @@ E.g. say you're building an uberjar containing compiled ClojureScript and CSS.
               :aot :all}})
 ```
 
-## Watching for changes
-
-`garden-watcher.core/new-garden-watcher` creates a component that, upon
-starting, reloads the given namespaces and generates CSS files for all vars with
-`:garden` metadata, and then watches the filesystem for changes, recompiling the
-CSS whenever a namespace is saved.
-
 ## License
 
-Copyright © 2016 Arne Brasseur
+Copyright © 2016-2019 Arne Brasseur
 
 Distributed under the Mozilla Public License 2.0 (https://www.mozilla.org/en-US/MPL/2.0/)
