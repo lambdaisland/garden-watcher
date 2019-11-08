@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file. This change
 <!-- ### Changed -->
 <!-- ### Fixed -->
 
-## [0.3.3] - 2019-11-07
+## [0.3.4] - 2019-11-07
 
 ### Changed
 
@@ -16,6 +16,12 @@ All notable changes to this project will be documented in this file. This change
 
 - `start-garden-watcher!` / `stop-garden-watcher!`, for people using e.g.
   Integrant instead of Component
+
+## [0.3.3] - 2018-10-15
+
+### Changed
+
+- Upgrade dependencies
 
 ## [0.3.2] - 2017-08-14
 ### Changed
@@ -36,9 +42,10 @@ All notable changes to this project will be documented in this file. This change
 ## 0.1.0 - 2016-12-29
 - Initial version, released as `lambdaisland/garden-reloader`
 
-[Unreleased]: https://github.com/plexus/garden-watcher/compare/v0.3.3...HEAD
-[0.3.1]: https://github.com/plexus/garden-watcher/compare/v0.3.2...v0.3.3
-[0.3.1]: https://github.com/plexus/garden-watcher/compare/v0.3.1...v0.3.2
+[Unreleased]: https://github.com/plexus/garden-watcher/compare/v0.3.4...HEAD
+[0.3.4]: https://github.com/plexus/garden-watcher/compare/v0.3.3...v0.3.4
+[0.3.3]: https://github.com/plexus/garden-watcher/compare/v0.3.2...v0.3.3
+[0.3.2]: https://github.com/plexus/garden-watcher/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/plexus/garden-watcher/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/plexus/garden-watcher/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/plexus/garden-watcher/compare/v0.1.0...v0.2.0
