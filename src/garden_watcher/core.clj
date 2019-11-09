@@ -61,6 +61,13 @@ name as resources/public/css/<name>.css"
       (when-let [ns-path (select-ns-path namespaces (str (:file event)))]
         (reload-and-compile! namespaces ns-path)))))
 
+(defn compile-garden-namespaces
+  "Given a list of namespaces (seq of symbol), reloads the namespaces, finds all
+  syms with a :garden metadata key, and compiles them to CSS."
+  [namespaces]
+  (run! #(reload-and-compile! namespaces %)
+        (map ns-file-name namespaces)))
+
 (defn start-garden-watcher! [namespaces]
   (let [paths   (map (comp file-on-classpath ns-file-name) namespaces)
         handler (garden-reloader-handler namespaces)]
@@ -71,13 +78,6 @@ name as resources/public/css/<name>.css"
 (defn stop-garden-watcher! [hawk]
   (hawk/stop! hawk)
   (println "Garden: stopped watching namespaces."))
-
-(defn compile-garden-namespaces
-  "Given a list of namespaces (seq of symbol), reloads the namespaces, finds all
-  syms with a :garden metadata key, and compiles them to CSS."
-  [namespaces]
-  (run! #(reload-and-compile! namespaces %)
-        (map ns-file-name namespaces)))
 
 (defrecord GardenWatcherComponent [namespaces]
   component/Lifecycle
