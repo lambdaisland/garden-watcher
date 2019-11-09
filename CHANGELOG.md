@@ -6,7 +6,13 @@ All notable changes to this project will be documented in this file. This change
 <!-- ### Changed -->
 <!-- ### Fixed -->
 
-## [0.3.4] - 2019-11-07
+## [0.3.5] - 2019-11-09
+
+### Fixed
+
+- Fixed order or `start-garden-watcher!` and  `compile-garden-namespaces`
+
+## [0.3.4] - 2019-11-08
 
 ### Changed
 
@@ -42,7 +48,8 @@ All notable changes to this project will be documented in this file. This change
 ## 0.1.0 - 2016-12-29
 - Initial version, released as `lambdaisland/garden-reloader`
 
-[Unreleased]: https://github.com/plexus/garden-watcher/compare/v0.3.4...HEAD
+[Unreleased]: https://github.com/plexus/garden-watcher/compare/v0.3.5...HEAD
+[0.3.5]: https://github.com/plexus/garden-watcher/compare/v0.3.4...v0.3.5
 [0.3.4]: https://github.com/plexus/garden-watcher/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/plexus/garden-watcher/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/plexus/garden-watcher/compare/v0.3.1...v0.3.2
