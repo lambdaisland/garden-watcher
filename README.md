@@ -10,10 +10,10 @@ Add `lambdaisland/garden-watcher` as a dependency in `deps.edn` (Clojure CLI),
 
 ```
 ;; deps.edn
-{lambdaisland/garden-watcher {:mvn/version "0.3.5"}}
+{lambdaisland/garden-watcher {:mvn/version "1.0.26"}}
 
 ;; project.clj/build.boot
-[lambdaisland/garden-watcher "0.3.5"]
+[lambdaisland/garden-watcher "1.0.26"]
 ```
 
 Create vars containing Garden-style declarations, and add a `^:garden` metadata

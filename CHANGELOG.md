@@ -1,4 +1,4 @@
-# Unreleased
+# 1.0.26 (2020-10-30 / e9c7c8b)
 
 ## Fixed
 
