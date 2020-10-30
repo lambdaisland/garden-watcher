@@ -1,51 +1,53 @@
-# Change Log
-All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
+# Unreleased
 
-<!-- ## [Unreleased] -->
-<!-- ### Added -->
-<!-- ### Changed -->
-<!-- ### Fixed -->
+## Fixed
 
-## [0.3.5] - 2019-11-09
+- Make classpath detection more robust
 
-### Fixed
+# [0.3.5] - 2019-11-09
+
+## Fixed
 
 - Fixed order or `start-garden-watcher!` and  `compile-garden-namespaces`
 
-## [0.3.4] - 2019-11-08
+# [0.3.4] - 2019-11-08
 
-### Changed
+## Changed
 
 - Upgrade dependencies
 
-### Added
+## Added
 
 - `start-garden-watcher!` / `stop-garden-watcher!`, for people using e.g.
   Integrant instead of Component
 
-## [0.3.3] - 2018-10-15
+# [0.3.3] - 2018-10-15
 
-### Changed
+## Changed
 
 - Upgrade dependencies
 
-## [0.3.2] - 2017-08-14
-### Changed
+# [0.3.2] - 2017-08-14
+
+## Changed
 - Remove second println when stopping the component
 
-## [0.3.1] - 2017-03-09
-### Fixed
+# [0.3.1] - 2017-03-09
+
+## Fixed
 - Added missing dependency: `org.clojure/java.classpath`
 
-## [0.3.0] - 2017-02-10
-### Changed
+# [0.3.0] - 2017-02-10
+
+## Changed
 - Made component idempotent
 
-## [0.2.0] - 2016-12-29
-### Changed
+# [0.2.0] - 2016-12-29
+
+## Changed
 - Renamed to `lambdaisland/garden-watcher`
 
-## 0.1.0 - 2016-12-29
+# 0.1.0 - 2016-12-29
 - Initial version, released as `lambdaisland/garden-reloader`
 
 [Unreleased]: https://github.com/plexus/garden-watcher/compare/v0.3.5...HEAD
