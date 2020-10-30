@@ -1,4 +1,4 @@
-# Unreleased
+# 1.0.27 (2020-10-30 / 634bccc)
 
 ## Fixed
 
