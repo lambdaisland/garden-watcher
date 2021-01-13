@@ -8,7 +8,7 @@
   (:import java.io.File))
 
 (defn- -ns->path
-  "Given a list of namespace symbols, return a map of namespace symbol -> path of corresponding
+  "Given a list of namespace symbols, returns a map of namespace symbol -> path of corresponding
    .clj or .cljc file."
   [sym-nses]
   (let [cp-dirs (into #{}
@@ -33,21 +33,21 @@
                                                                    canonical-cljc-path))))))
                                                     (filter some?))
                                               cp-dirs))]
-                (if path
-                  (assoc ns->paths
-                         sym-ns
-                         path)
-                  ns->paths)))
+                (cond->
+                  ns->paths
+                  path
+                  (assoc sym-ns
+                         path))))
             {}
             sym-nses)))
 
 (defn- -reload-and-compile!
-  "Reload the given namespace, then find all vars with a :garden metadata in that
-   namespace, and compile those to CSS. The target path is either defined in the
-   :garden metadata as :output-to, or it's derived from the var name as
+  "Reloads the given namespace, then finds all vars with a :garden metadata in that
+   namespace, and compiles those to CSS. The target path is either defined in the
+   :garden metadata as :output-to, or it iss derived from the var name as
    resources/public/css/<name>.css
   
-   Throws if namespace is not found."
+   Throws when namespace is not found."
   [sym-ns]
   (require sym-ns :reload)
   (doseq [[sym var] (ns-publics sym-ns)]
@@ -59,7 +59,7 @@
           (css (assoc garden-meta :output-to target) @var))))))
 
 (defn- -garden-reloader-handler
-  "Handler for Hawk reloading a namespace when any of its file changes."
+  "Handler for Hawk which reloads a namespace when its corresponding source file changes."
   [path->ns _ctx event]
   (when (= (:kind event) :modify)
     (-reload-and-compile! (get path->ns
@@ -67,13 +67,13 @@
 
 (defn compile-garden-namespaces
   "Given a list of namespace symbols, reloads those namespaces, finds all
-  syms with a :garden metadata key, and compiles them to CSS."
+   definitiions with a :garden metadata key, and compiles them to CSS."
   [sym-nses]
   (run! -reload-and-compile!
         (keys (-ns->path sym-nses))))
 
 (defn start-garden-watcher! [sym-nses]
-  "Starts a watcher which generates new CSS files any file associated with the given
+  "Starts a watcher which generates new CSS files when any source file associated with the given
    namespaces changes.
    See `compile-garden-namespaces`."
   (let [ns->path (-ns->path sym-nses)]
@@ -113,6 +113,6 @@
 
 (defn new-garden-watcher
   "Create a new Sierra Component that watches the given namespaces for changes,
-   and upon change compiles any symbols with a :garden metadata key to CSS."
+   and upon change compiles any definitions with a :garden metadata key to CSS."
  [namespaces]
   (->GardenWatcherComponent namespaces))
