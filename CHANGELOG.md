@@ -1,10 +1,11 @@
 # Unreleased
 
-## Added
-
-## Fixed
-
 ## Changed
+
+- Update dependencies
+  - com.stuartsierra/component {:mvn/version "0.4.0"} -> {:mvn/version "1.0.0"}
+  - org.clojure/java.classpath {:mvn/version "0.3.0"} -> {:mvn/version "1.0.0"}
+  - garden {:mvn/version "1.3.9"} -> {:mvn/version "1.3.10"}
 
 # 1.0.33 (2021-01-14 / 777c23b)
 
