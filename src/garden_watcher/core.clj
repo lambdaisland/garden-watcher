@@ -5,76 +5,90 @@
             [com.stuartsierra.component :as component]
             [garden.core :refer [css]]
             [hawk.core :as hawk])
-  (:import java.io.File
-           java.nio.file.Paths
-           java.nio.file.Files))
+  (:import java.io.File))
 
-(defn- ns-file-name
-  "Copied from clojure.tools.namespace.move because it's private there."
-  [sym]
-  (str (-> (name sym)
-           (str/replace "-" "_")
-           (str/replace "." File/separator))
-       ".clj"))
+(defn- -ns->path
+  "Given a list of namespace symbols, returns a map of namespace symbol -> path of corresponding
+   .clj or .cljc file."
+  [sym-nses]
+  (let [cp-dirs (into #{}
+                      (comp (filter #(.isDirectory %))
+                            (map #(.getCanonicalPath %)))
+                      (concat (cp/classpath (clojure.lang.RT/baseLoader))
+                              (cp/system-classpath)))]
+    (reduce (fn [ns->paths sym-ns]
+              (let [clj-path (str "/"
+                                  (-> (str sym-ns)
+                                      (str/replace "-" "_")
+                                      (str/replace "." File/separator))
+                                  ".clj")
+                    path     (first (sequence (comp (map (fn [cp-dir]
+                                                           (let [canonical-clj-path (str cp-dir
+                                                                                         clj-path)]
+                                                             (if (.exists (io/file canonical-clj-path))
+                                                               canonical-clj-path
+                                                               (let [canonical-cljc-path (str canonical-clj-path
+                                                                                              "c")]
+                                                                 (when (.exists (io/file canonical-cljc-path))
+                                                                   canonical-cljc-path))))))
+                                                    (filter some?))
+                                              cp-dirs))]
+                (cond->
+                  ns->paths
+                  path
+                  (assoc sym-ns
+                         path))))
+            {}
+            sym-nses)))
 
-(defn- file-on-classpath
-  "Given a relative path to a source file, find it on the classpath, returning a
-  fully qualified java.io.File "
-  [path]
-  (->> (concat (cp/classpath (clojure.lang.RT/baseLoader))
-               (cp/system-classpath))
-       (map #(io/file % path))
-       (filter #(.exists %))
-       first))
+(defn- -reload-and-compile!
+  "Reloads the given namespace, then finds all vars with a :garden metadata in that
+   namespace, and compiles those to CSS. The target path is either defined in the
+   :garden metadata as :output-to, or it iss derived from the var name as
+   resources/public/css/<name>.css
+  
+   Throws when namespace is not found."
+  [sym-ns]
+  (require sym-ns :reload)
+  (doseq [[sym var] (ns-publics sym-ns)]
+    (when-let [garden-meta (-> var meta :garden)]
+      (let [garden-meta (if (map? garden-meta) garden-meta {})]
+        (let [target (:output-to garden-meta (str "resources/public/css/" sym ".css"))]
+          (println (str "Garden: compiling #'" sym-ns "/" sym))
+          (io/make-parents target)
+          (css (assoc garden-meta :output-to target) @var))))))
 
-(defn- select-ns-path
-  "Given a list of namespace names (symbols) and a path (string), transforms the
-path so it's relative to the classpath"
-  [namespaces file]
-  (let [ns-paths (map ns-file-name namespaces)]
-    (first (filter #(.endsWith file %) ns-paths))))
-
-(defn- file->ns
-  "Given a list of namespace names (symbols) and a path (string), return the
-namespace name that corresponds with the path name"
-  [namespaces path]
-  (first (filter #(.endsWith path (ns-file-name %)) namespaces)))
-
-(defn- reload-and-compile!
-  "Reload the given path, then find all vars with a :garden metadata in the
-corresponding namespace, and compile those to CSS. The target path is either
-defined in the :garden metadata as :output-to, or it's derived from the var
-name as resources/public/css/<name>.css"
-  [namespaces path]
-  (when-let [ns (file->ns namespaces path)]
-    (require ns :reload)
-    (doseq [[sym var] (ns-publics ns)]
-      (when-let [garden-meta (-> var meta :garden)]
-        (let [garden-meta (if (map? garden-meta) garden-meta {})]
-          (let [target (:output-to garden-meta (str "resources/public/css/" sym ".css"))]
-            (println (str "Garden: compiling #'" ns "/" sym))
-            (io/make-parents target)
-            (css (assoc garden-meta :output-to target) @var)))))))
-
-(defn- garden-reloader-handler [namespaces]
-  (fn [_ctx event]
-    (when (= (:kind event) :modify)
-      (when-let [ns-path (select-ns-path namespaces (str (:file event)))]
-        (reload-and-compile! namespaces ns-path)))))
+(defn- -garden-reloader-handler
+  "Handler for Hawk which reloads a namespace when its corresponding source file changes."
+  [path->ns _ctx event]
+  (when (= (:kind event) :modify)
+    (-reload-and-compile! (get path->ns
+                               (.getCanonicalPath (:file event))))))
 
 (defn compile-garden-namespaces
-  "Given a list of namespaces (seq of symbol), reloads the namespaces, finds all
-  syms with a :garden metadata key, and compiles them to CSS."
-  [namespaces]
-  (run! #(reload-and-compile! namespaces %)
-        (map ns-file-name namespaces)))
+  "Given a list of namespace symbols, reloads those namespaces, finds all
+   definitiions with a :garden metadata key, and compiles them to CSS."
+  [sym-nses]
+  (run! -reload-and-compile!
+        (keys (-ns->path sym-nses))))
 
-(defn start-garden-watcher! [namespaces]
-  (let [paths   (map (comp file-on-classpath ns-file-name) namespaces)
-        handler (garden-reloader-handler namespaces)]
-    (compile-garden-namespaces namespaces)
-    (println "Garden: watching" (str/join ", " paths))
-    (hawk/watch! [{:paths paths :handler handler}])))
+(defn start-garden-watcher! [sym-nses]
+  "Starts a watcher which generates new CSS files when any source file associated with the given
+   namespaces changes.
+   See `compile-garden-namespaces`."
+  (let [ns->path (-ns->path sym-nses)]
+    (if (seq ns->path)
+      (let [paths (vals ns->path)]
+        (println "Garden: watching" (str/join ", " paths))
+        (run! -reload-and-compile!
+              (keys ns->path))
+        (hawk/watch! [{:handler (partial -garden-reloader-handler
+                                         (into {}
+                                               (map (fn [[sym-ns path]]
+                                                      [path sym-ns]))
+                                               ns->path))
+                       :paths   paths}]))
+      (println "No files found for the given namespaces"))))
 
 (defn stop-garden-watcher! [hawk]
   (hawk/stop! hawk)
@@ -99,6 +113,6 @@ name as resources/public/css/<name>.css"
 
 (defn new-garden-watcher
   "Create a new Sierra Component that watches the given namespaces for changes,
-and upon change compiles any symbols with a :garden metadata key to CSS."
+   and upon change compiles any definitions with a :garden metadata key to CSS."
  [namespaces]
   (->GardenWatcherComponent namespaces))

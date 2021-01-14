@@ -2,9 +2,13 @@
 
 ## Added
 
+- Support for *.cljc files
+
 ## Fixed
 
 ## Changed
+
+- Make namespace to file path conversion (and vice versa) more robust
 
 # 1.0.27 (2020-10-30 / 634bccc)
 

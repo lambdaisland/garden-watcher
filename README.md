@@ -173,6 +173,12 @@ E.g. say you're building an uberjar containing compiled ClojureScript and CSS.
               :aot :all}})
 ```
 
+## CLJC support
+
+In order to share code with Clojurescript, `cljc` files are fully supported.
+However, note that priority is given to regular `clj` files when both kind
+exist for a given namespace.
+
 ## License
 
 Copyright © 2016-2019 Arne Brasseur
