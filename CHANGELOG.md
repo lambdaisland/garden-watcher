@@ -4,8 +4,6 @@
 
 - Support for *.cljc files
 
-## Fixed
-
 ## Changed
 
 - Make namespace to file path conversion (and vice versa) more robust
