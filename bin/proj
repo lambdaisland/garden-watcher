@@ -1,8 +1,9 @@
-#!bin/bb
+#!/usr/bin/env bb
 
 (ns proj (:require [lioss.main :as lioss]))
 
 (lioss/main
  {:license        :mpl
   :inception-year 2016
-  :description    "Hot-reload your Garden stylesheets"})
+  :description    "Hot-reload your Garden stylesheets"
+  :group-id       "lambdaisland"})
