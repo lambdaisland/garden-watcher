@@ -1,3 +1,11 @@
+# Unreleased
+
+## Added
+
+## Fixed
+
+## Changed
+
 # 1.0.45 (2021-09-13 / aba992d)
 
 ## Added
