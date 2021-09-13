@@ -2,14 +2,6 @@
 
 ## Added
 
-## Fixed
-
-## Changed
-
-# 1.0.37 (2021-09-10 / 336d78a)
-
-## Added
-
 - Support for `hawk` options
 
 ## Changed
