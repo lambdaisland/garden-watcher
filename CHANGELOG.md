@@ -6,6 +6,17 @@
 
 ## Changed
 
+# 1.0.37 (2021-09-10 / 336d78a)
+
+## Added
+
+- Support for `hawk` options
+
+## Changed
+
+- Make `new-garden-watcher` function accept optional argument with `hawk` options.
+  Example of using `hawk` options can be found in [Polling Watches](https://github.com/wkf/hawk#polling-watches).
+
 # 1.0.36 (2021-01-14 / 4628d5b)
 
 ## Changed

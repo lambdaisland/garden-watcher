@@ -68,6 +68,7 @@ component directly.
 Use `garden-watcher.core/new-garden-watcher` to create the component, passing it
 a vector of namespace names. Once started this will watch and compile each var
 with a `:garden` metadata key in the given namespaces to a CSS file.
+Also, [hawk](https://github.com/wkf/hawk) options map can be passed as a second argument.
 
 ``` clojure
 (ns user

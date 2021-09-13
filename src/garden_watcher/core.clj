@@ -72,17 +72,19 @@
   (run! -reload-and-compile!
         (keys (-ns->path sym-nses))))
 
-(defn start-garden-watcher! [sym-nses]
+(defn start-garden-watcher!
   "Starts a watcher which generates new CSS files when any source file associated with the given
    namespaces changes.
    See `compile-garden-namespaces`."
+  [sym-nses hawk-options]
   (let [ns->path (-ns->path sym-nses)]
     (if (seq ns->path)
       (let [paths (vals ns->path)]
         (println "Garden: watching" (str/join ", " paths))
         (run! -reload-and-compile!
               (keys ns->path))
-        (hawk/watch! [{:handler (partial -garden-reloader-handler
+        (hawk/watch! hawk-options
+                     [{:handler (partial -garden-reloader-handler
                                          (into {}
                                                (map (fn [[sym-ns path]]
                                                       [path sym-ns]))
@@ -94,14 +96,14 @@
   (hawk/stop! hawk)
   (println "Garden: stopped watching namespaces."))
 
-(defrecord GardenWatcherComponent [namespaces]
+(defrecord GardenWatcherComponent [namespaces hawk-options]
   component/Lifecycle
   (start [this]
     (if (:garden-watcher-hawk this)
       (do
         (println "Garden: watcher already running.")
         this)
-      (assoc this :garden-watcher-hawk (start-garden-watcher! namespaces))))
+      (assoc this :garden-watcher-hawk (start-garden-watcher! namespaces hawk-options))))
   (stop [this]
     (if-let [hawk (:garden-watcher-hawk this)]
       (do
@@ -114,5 +116,7 @@
 (defn new-garden-watcher
   "Create a new Sierra Component that watches the given namespaces for changes,
    and upon change compiles any definitions with a :garden metadata key to CSS."
- [namespaces]
-  (->GardenWatcherComponent namespaces))
+  ([namespaces hawk-options]
+   (->GardenWatcherComponent namespaces hawk-options))
+  ([namespaces]
+   (new-garden-watcher namespaces {})))
