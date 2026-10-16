@@ -1,5 +1,5 @@
 {:paths ["src"]
- :deps  {com.stuartsierra/component {:mvn/version "1.0.0"},
-         org.clojure/java.classpath {:mvn/version "1.0.0"},
+ :deps  {com.stuartsierra/component {:mvn/version "1.2.0"},
+         org.clojure/java.classpath {:mvn/version "1.1.1"},
          hawk/hawk                  {:mvn/version "0.2.11"},
-         com.lambdaisland/garden    {:mvn/version "1.9.606"}}}
+         com.lambdaisland/garden    {:mvn/version "1.10.609"}}}
