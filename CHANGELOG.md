@@ -1,3 +1,11 @@
+# Unreleased
+
+## Added
+
+## Fixed
+
+## Changed
+
 # 1.1.50 (2026-10-16 / 04b8382)
 
 ## Changed
