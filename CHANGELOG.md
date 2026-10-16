@@ -6,6 +6,8 @@
 
 ## Changed
 
+- Depend on `com.lambdaisland/garden` instead of `garden/garden`
+
 # 1.0.45 (2021-09-13 / aba992d)
 
 ## Added
